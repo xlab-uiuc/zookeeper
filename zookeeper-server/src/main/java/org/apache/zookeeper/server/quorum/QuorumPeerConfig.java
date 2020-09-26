@@ -292,17 +292,17 @@ public class QuorumPeerConfig {
                 purgeInterval = Integer.parseInt(value);
             } else if (key.equals("standaloneEnabled")) {
                 if (value.toLowerCase().equals("true")) {
-                    setStandaloneEnabled(true);
+                    setStandaloneEnabled2(true);
                 } else if (value.toLowerCase().equals("false")) {
-                    setStandaloneEnabled(false);
+                    setStandaloneEnabled2(false);
                 } else {
                     throw new ConfigException("Invalid option " + value + " for standalone mode. Choose 'true' or 'false.'");
                 }
             } else if (key.equals("reconfigEnabled")) {
                 if (value.toLowerCase().equals("true")) {
-                    setReconfigEnabled(true);
+                    setReconfigEnabled2(true);
                 } else if (value.toLowerCase().equals("false")) {
-                    setReconfigEnabled(false);
+                    setReconfigEnabled2(false);
                 } else {
                     throw new ConfigException("Invalid option " + value + " for reconfigEnabled flag. Choose 'true' or 'false.'");
                 }
@@ -371,6 +371,7 @@ public class QuorumPeerConfig {
             dataLogDir = dataDir;
         }
 
+        LOG.warn("[CTEST][GET-PARAM] clientPort");
         if (clientPort == 0) {
             LOG.info("clientPort is not set");
             if (clientPortAddress != null) {
@@ -385,6 +386,7 @@ public class QuorumPeerConfig {
             LOG.info("clientPortAddress is {}", this.clientPortAddress.toString());
         }
 
+        LOG.warn("[CTEST][GET-PARAM] secureClientPort");
         if (secureClientPort == 0) {
             LOG.info("secureClientPort is not set");
             if (secureClientPortAddress != null) {
@@ -736,48 +738,62 @@ public class QuorumPeerConfig {
        }
     }
 
-    public InetSocketAddress getClientPortAddress() { return clientPortAddress; }
-    public InetSocketAddress getSecureClientPortAddress() { return secureClientPortAddress; }
-    public File getDataDir() { return dataDir; }
-    public File getDataLogDir() { return dataLogDir; }
-    public int getTickTime() { return tickTime; }
-    public int getMaxClientCnxns() { return maxClientCnxns; }
-    public int getMinSessionTimeout() { return minSessionTimeout; }
-    public int getMaxSessionTimeout() { return maxSessionTimeout; }
-    public boolean areLocalSessionsEnabled() { return localSessionsEnabled; }
+    static private String getStackTrace() {
+        String stacktrace = " ";
+        for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+            stacktrace = stacktrace.concat(element.getClassName() + "\t");
+        }
+        return stacktrace;
+    }
+
+    public InetSocketAddress getClientPortAddress() { LOG.warn("[CTEST][GET-PARAM] clientPortAddress"); return clientPortAddress; }
+    public InetSocketAddress getSecureClientPortAddress() { LOG.warn("[CTEST][GET-PARAM] secureClientPortAddress"); return secureClientPortAddress; }
+    public File getDataDir() { LOG.warn("[CTEST][GET-PARAM] dataDir"); return dataDir; }
+    public File getDataLogDir() { LOG.warn("[CTEST][GET-PARAM] dataLogDir"); return dataLogDir; }
+    public int getTickTime() { LOG.warn("[CTEST][GET-PARAM] tickTime"); return tickTime; }
+    public int getMaxClientCnxns() { LOG.warn("[CTEST][GET-PARAM] maxClientCnxns"); return maxClientCnxns; }
+    public int getMinSessionTimeout() { LOG.warn("[CTEST][GET-PARAM] minSessionTimeout"); return minSessionTimeout; }
+    public int getMaxSessionTimeout() { LOG.warn("[CTEST][GET-PARAM] maxSessionTimeout"); return maxSessionTimeout; }
+    public boolean areLocalSessionsEnabled() { LOG.warn("[CTEST][GET-PARAM] localSessionsEnabled"); return localSessionsEnabled; }
     public boolean isLocalSessionsUpgradingEnabled() {
+        LOG.warn("[CTEST][GET-PARAM] localSessionsUpgradingEnabled");
         return localSessionsUpgradingEnabled;
     }
     public boolean isSslQuorum() {
+        LOG.warn("[CTEST][GET-PARAM] sslQuorum");
         return sslQuorum;
     }
 
     public boolean shouldUsePortUnification() {
+        LOG.warn("[CTEST][GET-PARAM] portUnification");
         return shouldUsePortUnification;
     }
 
-    public int getInitLimit() { return initLimit; }
-    public int getSyncLimit() { return syncLimit; }
-    public int getElectionAlg() { return electionAlg; }
+    public int getInitLimit() { LOG.warn("[CTEST][GET-PARAM] initLimit"); return initLimit; }
+    public int getSyncLimit() { LOG.warn("[CTEST][GET-PARAM] syncLimit"); return syncLimit; }
+    public int getElectionAlg() { LOG.warn("[CTEST][GET-PARAM] electionAlg");  return electionAlg; }
     public int getElectionPort() { return electionPort; }
 
     public int getSnapRetainCount() {
+        LOG.warn("[CTEST][GET-PARAM] autopurge.snapRetainCount");
         return snapRetainCount;
     }
 
     public int getPurgeInterval() {
+        LOG.warn("[CTEST][GET-PARAM] autopurge.purgeInterval");
         return purgeInterval;
     }
     
     public boolean getSyncEnabled() {
+        LOG.warn("[CTEST][GET-PARAM] syncEnabled");
         return syncEnabled;
     }
 
     public QuorumVerifier getQuorumVerifier() {
         return quorumVerifier;
     }
-    
-    public QuorumVerifier getLastSeenQuorumVerifier() {   
+
+    public QuorumVerifier getLastSeenQuorumVerifier() {
         return lastSeenQuorumVerifier;
     }
 
@@ -793,6 +809,7 @@ public class QuorumPeerConfig {
     }
 
     public LearnerType getPeerType() {
+        LOG.warn("[CTEST][GET-PARAM] peerType");
         return peerType;
     }
 
@@ -801,20 +818,32 @@ public class QuorumPeerConfig {
     }
     
     public Boolean getQuorumListenOnAllIPs() {
+        LOG.warn("[CTEST][GET-PARAM] quorumListenOnAllIPs");
         return quorumListenOnAllIPs;
     }
  
     public static boolean isStandaloneEnabled() {
+        LOG.warn("[CTEST][GET-PARAM] standaloneEnabled");
 	return standaloneEnabled;
     }
     
     public static void setStandaloneEnabled(boolean enabled) {
+        LOG.warn("[CTEST][SET-PARAM] standaloneEnabled" + getStackTrace());
         standaloneEnabled = enabled;
     }
 
-    public static boolean isReconfigEnabled() { return reconfigEnabled; }
+    public static void setStandaloneEnabled2(boolean enabled) {
+        standaloneEnabled = enabled;
+    }
+
+    public static boolean isReconfigEnabled() { LOG.warn("[CTEST][GET-PARAM] reconfigEnabled"); return reconfigEnabled; }
 
     public static void setReconfigEnabled(boolean enabled) {
+        LOG.warn("[CTEST][SET-PARAM] reconfigEnabled" + getStackTrace());
+        reconfigEnabled = enabled;
+    }
+
+    public static void setReconfigEnabled2(boolean enabled) {
         reconfigEnabled = enabled;
     }
 

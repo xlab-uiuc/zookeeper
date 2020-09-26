@@ -25,6 +25,8 @@ import java.util.Arrays;
 import org.apache.yetus.audience.InterfaceAudience;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Server configuration storage.
@@ -38,6 +40,7 @@ public class ServerConfig {
     //// If you update the configuration parameters be sure
     //// to update the "conf" 4letter word
     ////
+    private static final Logger LOG = LoggerFactory.getLogger(ServerConfig.class);
     protected InetSocketAddress clientPortAddress;
     protected InetSocketAddress secureClientPortAddress;
     protected File dataDir;
@@ -102,17 +105,19 @@ public class ServerConfig {
     }
 
     public InetSocketAddress getClientPortAddress() {
+        LOG.warn("[CTEST][GET-PARAM] clientPortAddress");
         return clientPortAddress;
     }
     public InetSocketAddress getSecureClientPortAddress() {
+        LOG.warn("[CTEST][GET-PARAM] secureClientPortAddress");
         return secureClientPortAddress;
     }
-    public File getDataDir() { return dataDir; }
-    public File getDataLogDir() { return dataLogDir; }
-    public int getTickTime() { return tickTime; }
-    public int getMaxClientCnxns() { return maxClientCnxns; }
+    public File getDataDir() { LOG.warn("[CTEST][GET-PARAM] dataDir"); return dataDir; }
+    public File getDataLogDir() { LOG.warn("[CTEST][GET-PARAM] dataLogDir"); return dataLogDir; }
+    public int getTickTime() { LOG.warn("[CTEST][GET-PARAM] tickTime"); return tickTime; }
+    public int getMaxClientCnxns() { LOG.warn("[CTEST][GET-PARAM] maxClientCnxns"); return maxClientCnxns; }
     /** minimum session timeout in milliseconds, -1 if unset */
-    public int getMinSessionTimeout() { return minSessionTimeout; }
+    public int getMinSessionTimeout() { LOG.warn("[CTEST][GET-PARAM] minSessionTimeout"); return minSessionTimeout; }
     /** maximum session timeout in milliseconds, -1 if unset */
-    public int getMaxSessionTimeout() { return maxSessionTimeout; }
+    public int getMaxSessionTimeout() { LOG.warn("[CTEST][GET-PARAM] maxSessionTimeout"); return maxSessionTimeout; }
 }
