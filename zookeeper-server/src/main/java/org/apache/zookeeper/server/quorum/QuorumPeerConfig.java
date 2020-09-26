@@ -113,6 +113,7 @@ public class QuorumPeerConfig {
      * @see org.apache.zookeeper.server.PurgeTxnLog#purge(File, File, int)
      */
     private final int MIN_SNAP_RETAIN_COUNT = 3;
+    private static boolean isFirstThread = true;
 
     @SuppressWarnings("serial")
     public static class ConfigException extends Exception {
@@ -204,6 +205,35 @@ public class QuorumPeerConfig {
                }
            }
         }
+        if(isFirstThreadAndFlip()) {
+            injectError(true);
+        } else {
+            injectError(false);
+        }
+    }
+
+    private synchronized boolean isFirstThreadAndFlip() {
+        boolean tmp = isFirstThread;
+        isFirstThread = false;
+        return tmp;
+    }
+
+    private void injectError(boolean inj_env_param) throws ConfigException {
+        String injectionFile = "ctest.cfg";
+        try {
+            Properties cfg = new Properties();
+            FileInputStream in = new FileInputStream(injectionFile);
+            try {
+                cfg.load(in);
+            } finally {
+                in.close();
+            }
+            parseProperties(cfg, true, inj_env_param, false);
+        } catch (IOException e) {
+            throw new ConfigException("[CTEST] Error injecting from " + injectionFile, e);
+        } catch (IllegalArgumentException e) {
+            throw new ConfigException("[CTEST] Error injecting from " + injectionFile, e);
+        }
     }
 
     // This method gets the version from the end of dynamic file name.
@@ -225,13 +255,17 @@ public class QuorumPeerConfig {
         }
     }
 
+    public void parseProperties(Properties zkProp) throws IOException, ConfigException {
+        parseProperties(zkProp, false, true, true);
+    }
+
     /**
      * Parse config from a Properties.
      * @param zkProp Properties to parse from.
      * @throws IOException
      * @throws ConfigException
      */
-    public void parseProperties(Properties zkProp)
+    public void parseProperties(Properties zkProp, boolean ctest_inj , boolean inj_env_param, boolean inj_cli_port)
     throws IOException, ConfigException {
         int clientPort = 0;
         int secureClientPort = 0;
@@ -241,21 +275,21 @@ public class QuorumPeerConfig {
         for (Entry<Object, Object> entry : zkProp.entrySet()) {
             String key = entry.getKey().toString().trim();
             String value = entry.getValue().toString().trim();
-            if (key.equals("dataDir")) {
+            if (key.equals("dataDir") && inj_env_param) {
                 dataDir = vff.create(value);
-            } else if (key.equals("dataLogDir")) {
+            } else if (key.equals("dataLogDir") && inj_env_param) {
                 dataLogDir = vff.create(value);
-            } else if (key.equals("clientPort")) {
+            } else if (key.equals("clientPort") && inj_env_param && inj_cli_port) {
                 clientPort = Integer.parseInt(value);
             } else if (key.equals("localSessionsEnabled")) {
                 localSessionsEnabled = Boolean.parseBoolean(value);
             } else if (key.equals("localSessionsUpgradingEnabled")) {
                 localSessionsUpgradingEnabled = Boolean.parseBoolean(value);
-            } else if (key.equals("clientPortAddress")) {
+            } else if (key.equals("clientPortAddress") && inj_env_param && inj_cli_port) {
                 clientPortAddress = value.trim();
-            } else if (key.equals("secureClientPort")) {
+            } else if (key.equals("secureClientPort") && inj_env_param && inj_cli_port) {
                 secureClientPort = Integer.parseInt(value);
-            } else if (key.equals("secureClientPortAddress")){
+            } else if (key.equals("secureClientPortAddress") && inj_env_param && inj_cli_port){
                 secureClientPortAddress = value.trim();
             } else if (key.equals("tickTime")) {
                 tickTime = Integer.parseInt(value);
@@ -284,7 +318,7 @@ public class QuorumPeerConfig {
                 }
             } else if (key.equals( "syncEnabled" )) {
                 syncEnabled = Boolean.parseBoolean(value);
-            } else if (key.equals("dynamicConfigFile")){
+            } else if (key.equals("dynamicConfigFile") && inj_env_param){
                 dynamicConfigFileStr = value;
             } else if (key.equals("autopurge.snapRetainCount")) {
                 snapRetainCount = Integer.parseInt(value);
@@ -364,13 +398,16 @@ public class QuorumPeerConfig {
             snapRetainCount = MIN_SNAP_RETAIN_COUNT;
         }
 
+        if (inj_env_param) {
         if (dataDir == null) {
             throw new IllegalArgumentException("dataDir is not set");
         }
         if (dataLogDir == null) {
             dataLogDir = dataDir;
         }
+        }
 
+        if (inj_env_param && inj_cli_port) {
         if (clientPort == 0) {
             LOG.info("clientPort is not set");
             if (clientPortAddress != null) {
@@ -384,7 +421,9 @@ public class QuorumPeerConfig {
             this.clientPortAddress = new InetSocketAddress(clientPort);
             LOG.info("clientPortAddress is {}", this.clientPortAddress.toString());
         }
+        }
 
+        if (inj_env_param && inj_cli_port) {
         if (secureClientPort == 0) {
             LOG.info("secureClientPort is not set");
             if (secureClientPortAddress != null) {
@@ -401,6 +440,7 @@ public class QuorumPeerConfig {
         if (this.secureClientPortAddress != null) {
             configureSSLAuth();
         }
+        }
 
         if (tickTime == 0) {
             throw new IllegalArgumentException("tickTime is not set");
@@ -414,6 +454,7 @@ public class QuorumPeerConfig {
                     "minSessionTimeout must not be larger than maxSessionTimeout");
         }          
 
+        if (ctest_inj) return;
         // backward compatibility - dynamic configuration in the same file as
         // static configuration params see writeDynamicConfig()
         if (dynamicConfigFileStr == null) {
@@ -776,7 +817,7 @@ public class QuorumPeerConfig {
     public QuorumVerifier getQuorumVerifier() {
         return quorumVerifier;
     }
-    
+
     public QuorumVerifier getLastSeenQuorumVerifier() {   
         return lastSeenQuorumVerifier;
     }
