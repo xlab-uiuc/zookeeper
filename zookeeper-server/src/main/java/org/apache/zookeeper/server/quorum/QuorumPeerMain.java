@@ -129,7 +129,7 @@ public class QuorumPeerMain {
         }
     }
 
-    static private String getStackTrace() {
+    private String getStackTrace() {
       String stacktrace = " ";
       for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
         stacktrace = stacktrace.concat(
