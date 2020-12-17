@@ -129,6 +129,15 @@ public class QuorumPeerMain {
         }
     }
 
+    static private String getStackTrace() {
+      String stacktrace = " ";
+      for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
+        stacktrace = stacktrace.concat(
+          e.getClassName() + "#" + e.getMethodName() + "#" + e.getLineNumber() + "\t");
+      }
+      return stacktrace;
+    }
+
     public void runFromConfig(QuorumPeerConfig config)
             throws IOException, AdminServerException
     {
