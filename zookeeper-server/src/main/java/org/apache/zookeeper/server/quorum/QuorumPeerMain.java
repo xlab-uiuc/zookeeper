@@ -186,28 +186,28 @@ public class QuorumPeerMain {
           quorumPeer.setLearnerType(config.getPeerType());
           quorumPeer.setSyncEnabled(config.getSyncEnabled());
           quorumPeer.setQuorumListenOnAllIPs(config.getQuorumListenOnAllIPs());
-          LOG.warn("[CTEST][GET-PARAM] sslQuorumReloadCertFiles");
+          LOG.warn("[CTEST][GET-PARAM] sslQuorumReloadCertFiles" + getStackTrace());
           if (config.sslQuorumReloadCertFiles) {
               quorumPeer.getX509Util().enableCertFileReloading();
           }
 
           // sets quorum sasl authentication configurations
           quorumPeer.setQuorumSaslEnabled(config.quorumEnableSasl);
-          LOG.warn("[CTEST][GET-PARAM] quorum.auth.enableSasl");
+          LOG.warn("[CTEST][GET-PARAM] quorum.auth.enableSasl" + getStackTrace());
           if(quorumPeer.isQuorumSaslAuthEnabled()){
               quorumPeer.setQuorumServerSaslRequired(config.quorumServerRequireSasl);
-              LOG.warn("[CTEST][GET-PARAM] quorum.auth.serverRequireSasl");
+              LOG.warn("[CTEST][GET-PARAM] quorum.auth.serverRequireSasl" + getStackTrace());
               quorumPeer.setQuorumLearnerSaslRequired(config.quorumLearnerRequireSasl);
-              LOG.warn("[CTEST][GET-PARAM] quorum.auth.learnerRequireSasl");
+              LOG.warn("[CTEST][GET-PARAM] quorum.auth.learnerRequireSasl" + getStackTrace());
               quorumPeer.setQuorumServicePrincipal(config.quorumServicePrincipal);
-              LOG.warn("[CTEST][GET-PARAM] quorum.auth.kerberos.servicePrincipal");
+              LOG.warn("[CTEST][GET-PARAM] quorum.auth.kerberos.servicePrincipal" + getStackTrace());
               quorumPeer.setQuorumServerLoginContext(config.quorumServerLoginContext);
-              LOG.warn("[CTEST][GET-PARAM] quorum.auth.server.saslLoginContext");
+              LOG.warn("[CTEST][GET-PARAM] quorum.auth.server.saslLoginContext" + getStackTrace());
               quorumPeer.setQuorumLearnerLoginContext(config.quorumLearnerLoginContext);
-              LOG.warn("[CTEST][GET-PARAM] quorum.auth.learner.saslLoginContext");
+              LOG.warn("[CTEST][GET-PARAM] quorum.auth.learner.saslLoginContext" + getStackTrace());
           }
           quorumPeer.setQuorumCnxnThreadsSize(config.quorumCnxnThreadsSize);
-          LOG.warn("[CTEST][GET-PARAM] quorum.cnxn.threads.size");
+          LOG.warn("[CTEST][GET-PARAM] quorum.cnxn.threads.size" + getStackTrace());
           quorumPeer.initialize();
           
           quorumPeer.start();

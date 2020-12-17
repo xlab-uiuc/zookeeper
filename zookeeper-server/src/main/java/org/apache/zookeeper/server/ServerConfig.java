@@ -105,19 +105,19 @@ public class ServerConfig {
     }
 
     public InetSocketAddress getClientPortAddress() {
-        LOG.warn("[CTEST][GET-PARAM] clientPortAddress");
+        LOG.warn("[CTEST][GET-PARAM] clientPortAddress" + getStackTrace());
         return clientPortAddress;
     }
     public InetSocketAddress getSecureClientPortAddress() {
-        LOG.warn("[CTEST][GET-PARAM] secureClientPortAddress");
+        LOG.warn("[CTEST][GET-PARAM] secureClientPortAddress" + getStackTrace());
         return secureClientPortAddress;
     }
-    public File getDataDir() { LOG.warn("[CTEST][GET-PARAM] dataDir"); return dataDir; }
-    public File getDataLogDir() { LOG.warn("[CTEST][GET-PARAM] dataLogDir"); return dataLogDir; }
-    public int getTickTime() { LOG.warn("[CTEST][GET-PARAM] tickTime"); return tickTime; }
-    public int getMaxClientCnxns() { LOG.warn("[CTEST][GET-PARAM] maxClientCnxns"); return maxClientCnxns; }
+    public File getDataDir() { LOG.warn("[CTEST][GET-PARAM] dataDir" + getStackTrace()); return dataDir; }
+    public File getDataLogDir() { LOG.warn("[CTEST][GET-PARAM] dataLogDir" + getStackTrace()); return dataLogDir; }
+    public int getTickTime() { LOG.warn("[CTEST][GET-PARAM] tickTime" + getStackTrace()); return tickTime; }
+    public int getMaxClientCnxns() { LOG.warn("[CTEST][GET-PARAM] maxClientCnxns" + getStackTrace()); return maxClientCnxns; }
     /** minimum session timeout in milliseconds, -1 if unset */
-    public int getMinSessionTimeout() { LOG.warn("[CTEST][GET-PARAM] minSessionTimeout"); return minSessionTimeout; }
+    public int getMinSessionTimeout() { LOG.warn("[CTEST][GET-PARAM] minSessionTimeout" + getStackTrace()); return minSessionTimeout; }
     /** maximum session timeout in milliseconds, -1 if unset */
-    public int getMaxSessionTimeout() { LOG.warn("[CTEST][GET-PARAM] maxSessionTimeout"); return maxSessionTimeout; }
+    public int getMaxSessionTimeout() { LOG.warn("[CTEST][GET-PARAM] maxSessionTimeout" + getStackTrace()); return maxSessionTimeout; }
 }
